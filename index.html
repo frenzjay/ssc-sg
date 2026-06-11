@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Unofficial Student Government Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header window-box">
+            <div class="header-branding">
+                <img src="logo.jpg" alt="SSC SG Logo" class="sg-logo" onerror="this.style.display='none'">
+                <div>
+                    <h1>STUDENT GOV BOARD</h1>
+                    <p class="subtitle">SIQUIJOR STATE COLLEGE</p>
+                    <p id="today-label" class="today-label"></p>
+                </div>
+            </div>
+            <div class="toggle-wrapper">
+                <button id="view-toggle" class="btn-retro">CALENDAR</button>
+            </div>
+        </header>
+
+        <div class="controls-bar window-box">
+            <button id="btn-today" class="btn-retro">TODAY</button>
+            <div class="controls-center">
+                <button id="btn-prev" class="btn-icon">&lt;&lt;</button>
+                <h2 id="current-month-year">MONTH YEAR</h2>
+                <button id="btn-next" class="btn-icon">&gt;&gt;</button>
+            </div>
+            <div class="spacer"></div>
+        </div>
+
+        <main id="timeline-view" class="view-section active">
+            <div id="timeline-board" class="board">
+                <p>Fetching</p>
+            </div>
+        </main>
+
+        <main id="calendar-view" class="view-section" style="display: none;">
+            <div class="calendar-wrapper"> 
+                <div class="weekdays">
+                    <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
+            </div>
+        </main>
+
+        <div id="post-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content window-box">
+                <div class="modal-title-bar">
+                    <span>BOARD</span>
+                    <button id="close-modal" class="btn-close">X</button>
+                </div>
+                <div id="modal-body" class="modal-inner">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
