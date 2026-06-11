@@ -1,4 +1,4 @@
-const API_URL = 'http://itzfrenz.7m.pl/calendar/studentGovApi.php'; 
+const API_URL = 'https://itzfrenz.7m.pl/calendar/studentGovApi.php'; 
 
 let globalData = [];
 let isTimeline = true;
