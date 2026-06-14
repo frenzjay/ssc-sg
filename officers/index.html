@@ -99,7 +99,7 @@
             position: absolute;
             top: 20px;
             bottom: 20px;
-            left: calc(50% - 2px);
+            left: calc(50% - 2px); 
             width: 4px;
             background-color: var(--ssc-black);
             z-index: 0;
@@ -124,7 +124,7 @@
             content: '';
             position: absolute;
             top: -25px; 
-            left: calc(50% - 2px);
+            left: calc(50% - 2px); 
             width: 4px;
             height: 65px;
             background-color: var(--ssc-black);
@@ -149,13 +149,8 @@
             border-top: 4px solid var(--ssc-black);
             z-index: 0;
         }
-        .branch-node::before { 
-            right: 50%; 
-            border-right: 4px solid var(--ssc-black); 
-        }
-        .branch-node::after { 
-            left: 50%; 
-        }
+        .branch-node::before { right: 50%; border-right: 4px solid var(--ssc-black); }
+        .branch-node::after { left: 50%; }
         
         .branch-node:first-child::before { border-top: none; }
         .branch-node:last-child::after { border-top: none; }
@@ -172,7 +167,7 @@
             margin-bottom: 25px;
             box-shadow: 4px 4px 0px var(--ssc-black);
             position: relative;
-            z-index: 2;
+            z-index: 2; 
         }
 
         .exec-title { background: var(--ssc-black); }
@@ -186,7 +181,6 @@
             width: 220px;
             padding: 15px 10px;
             text-align: center;
-            cursor: pointer;
             transition: all 0.15s ease;
             display: flex;
             flex-direction: column;
@@ -194,12 +188,17 @@
             align-items: center;
             gap: 8px;
             position: relative;
-            z-index: 2;
+            z-index: 2; 
         }
-        .officer-card:hover {
+
+        .officer-card.has-creds {
+            cursor: pointer;
+        }
+        .officer-card.has-creds:hover {
             transform: translate(-4px, -4px);
             box-shadow: 10px 10px 0px var(--ssc-black);
         }
+
         .off-position {
             font-size: 0.7rem;
             font-weight: 700;
@@ -237,7 +236,7 @@
                 </div>
             </div>
             <div class="toggle-wrapper">
-                <a href="../" style="text-decoration: none;">
+                <a href="index.html" style="text-decoration: none;">
                     <button class="btn-retro">HOME</button>
                 </a>
             </div>
@@ -255,7 +254,7 @@
             
             <div id="viewport">
                 <div id="canvas">
-                    <p style="text-align:center; font-weight:bold; padding: 40px; font-size: 1.5rem;">Fetching</p>
+                    <p style="text-align:center; font-weight:bold; padding: 40px; font-size: 1.5rem;">fetching</p>
                 </div>
             </div>
         </div>
@@ -275,21 +274,24 @@
     <script>
         const API_URL = 'https://itzfrenz.7m.pl/calendar/studentGovApi.php?endpoint=officers';
         let globalOfficers = [];
+
         function getContrastTextColor(hex) {
             hex = hex.replace("#", "");
             if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
             const r = parseInt(hex.substring(0,2), 16), g = parseInt(hex.substring(2,4), 16), b = parseInt(hex.substring(4,6), 16);
             return (((r*299) + (g*587) + (b*114)) / 1000 >= 128) ? '#000000' : '#ffffff';
         }
+
         async function fetchOfficers() {
             try {
                 const res = await fetch(API_URL);
                 globalOfficers = await res.json();
                 renderOrgChart();
             } catch (err) {
-                document.getElementById('canvas').innerHTML = '<p class="alert error" style="margin:20px;">Failed to load officers.</p>';
+                document.getElementById('canvas').innerHTML = '<p class="alert error" style="margin:20px;">-1</p>';
             }
         }
+
         function renderOrgChart() {
             const canvas = document.getElementById('canvas');
             canvas.innerHTML = '';
@@ -348,13 +350,19 @@
                     let tierHtml = '<div class="org-tier">';
                     tierList.forEach(off => {
                         const textColor = getContrastTextColor(off.color);
+                        
+                        const hasCreds = off.credentials && off.credentials.trim() !== '';
+                        const cardClass = hasCreds ? 'officer-card has-creds' : 'officer-card';
+                        const clickEvent = hasCreds ? `onclick="openOfficer(${off.id})"` : '';
+                        const credsText = hasCreds ? `<p class="off-click">View Credentials</p>` : '';
+
                         tierHtml += `
-                            <div class="officer-card" style="border-bottom-color: ${off.color};" onclick="openOfficer(${off.id})">
+                            <div class="${cardClass}" style="border-bottom-color: ${off.color};" ${clickEvent}>
                                 <div class="off-position" style="background-color: ${off.color}; color: ${textColor}; border-color: ${off.color};">
                                     ${off.position}
                                 </div>
                                 <h3 class="off-name">${off.name}</h3>
-                                <p class="off-click">View Credentials</p>
+                                ${credsText}
                             </div>
                         `;
                     });
@@ -374,7 +382,7 @@
                 html += `<h2 class="division-header">${divTitle}</h2>`;
                 
                 if (data.EXEC.length > 0) {
-                    html += `<div class="exec-title">EXECUTIVE BOARD</div>`;
+                    html += `<div class="exec-title">OFFICERS</div>`;
                     html += buildVerticalStack(data.EXEC);
                 }
 
@@ -405,9 +413,11 @@
         }
         const viewport = document.getElementById('viewport');
         const canvas = document.getElementById('canvas');
+        
         let scale = 1;
         let currentX = 0;
         let currentY = 0;
+        
         let isDragging = false;
         let startX, startY;
         let initialPinchDist = null;
@@ -419,11 +429,12 @@
 
         function zoomIn() { scale *= 1.2; updateTransform(); }
         function zoomOut() { scale /= 1.2; updateTransform(); }
+        
         function resetZoom() {
             let vW = viewport.clientWidth || window.innerWidth;
             let cW = canvas.scrollWidth || 1000;
             
-            scale = vW / (cW + 80);
+            scale = vW / (cW + 80); 
             if (isNaN(scale) || scale === Infinity) scale = 1;
             if (scale > 1) scale = 1; 
             if (scale < 0.15) scale = 0.15; 
@@ -449,11 +460,13 @@
 
         viewport.addEventListener('mouseup', () => { isDragging = false; viewport.style.cursor = 'grab'; });
         viewport.addEventListener('mouseleave', () => { isDragging = false; viewport.style.cursor = 'grab'; });
+
         viewport.addEventListener('wheel', (e) => {
             e.preventDefault();
             if (e.deltaY < 0) zoomIn();
             else zoomOut();
         }, { passive: false });
+
         viewport.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
                 isDragging = true;
@@ -486,6 +499,7 @@
         }, { passive: false });
 
         viewport.addEventListener('touchend', () => { isDragging = false; initialPinchDist = null; });
+
         function openOfficer(id) {
             const off = globalOfficers.find(o => o.id === id);
             if (!off) return;
