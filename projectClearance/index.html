@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Clearance</title>
+    <style>
+        :root {
+            --laurel-green: #16a34a;
+            --torch-gold: #d97706;
+            --shield-black: #1f2937;
+            --true-black: #000000;
+            --bg-gray: #e5e5e5;
+            --pure-white: #ffffff;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--shield-black);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: var(--true-black);
+            text-align: center;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            border-bottom: 4px solid var(--true-black);
+            padding-bottom: 10px;
+        }
+
+        .card {
+            background: var(--pure-white);
+            padding: 20px;
+            border: 3px solid var(--true-black);
+            box-shadow: 6px 6px 0px var(--true-black);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            flex: 1 1 200px;
+            padding: 12px;
+            border: 3px solid var(--true-black);
+            border-radius: 0;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: var(--pure-white);
+            color: var(--true-black);
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: 3px solid var(--true-black);
+            border-radius: 0;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--true-black);
+            transition: all 0.1s ease;
+            width: 100%;
+        }
+
+        button:active {
+            box-shadow: 0px 0px 0px var(--true-black);
+            transform: translate(4px, 4px);
+        }
+
+        .btn-add {
+            background-color: var(--laurel-green);
+            color: var(--pure-white);
+        }
+
+        .btn-claim {
+            background-color: var(--torch-gold);
+            color: var(--true-black);
+            font-size: 14px;
+            width: auto;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 3px solid var(--true-black);
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+
+        .clearance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--pure-white);
+            padding: 15px;
+            border: 3px solid var(--true-black);
+            border-left: 8px solid var(--true-black);
+            margin-bottom: 15px;
+            box-shadow: 4px 4px 0px var(--true-black);
+        }
+
+        .department-tag {
+            background: var(--shield-black);
+            padding: 4px 10px;
+            border: 2px solid var(--true-black);
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--pure-white);
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Clearance Track</h2>
+
+    <div class="card">
+        <h3>1. Add Clearance</h3>
+        <div class="form-group">
+            <input type="text" id="studentName" placeholder="Student Name">
+            <select id="department">
+                <option value="" disabled selected>Select Department</option>
+                <option value="JHJ">JHJ</option>
+                <option value="SHS">SHS</option>
+                <option value="COT">COT</option>
+                <option value="CME">CME</option>
+                <option value="CCJE">CCJE</option>
+                <option value="CAS">CAS</option>
+                <option value="COTE">COTE</option>
+                <option value="COE">COE</option>
+                <option value="CBM">CBM</option>
+            </select>
+        </div>
+        <button class="btn-add" onclick="addClearance()">+ Add to “To Claim”</button>
+    </div>
+
+    <div class="card">
+        <h3>2. Search & Claim</h3>
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search name" onkeyup="renderList()">
+        <div id="clearanceList"></div>
+    </div>
+
+    <script>
+        let clearances = JSON.parse(localStorage.getItem('osas_clearances')) || [];
+
+        function addClearance() {
+            const nameInput = document.getElementById('studentName');
+            const deptInput = document.getElementById('department');
+            const name = nameInput.value.trim();
+            const dept = deptInput.value;
+
+            if (name === '') {
+                alert("Please enter student name.");
+                return;
+            }
+            if (dept === "") {
+                alert("Please select a department.");
+                return;
+            }
+
+            const newEntry = { id: Date.now(), name: name, dept: dept };
+            clearances.unshift(newEntry);
+            localStorage.setItem('osas_clearances', JSON.stringify(clearances));
+            
+            nameInput.value = '';
+            deptInput.value = '';
+            renderList();
+        }
+
+        function claimClearance(id) {
+            if(confirm("Confirm claim?")) {
+                clearances = clearances.filter(student => student.id !== id);
+                localStorage.setItem('osas_clearances', JSON.stringify(clearances));
+                renderList();
+            }
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById('clearanceList');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            listContainer.innerHTML = ''; 
+
+            const filtered = clearances.filter(s => s.name.toLowerCase().includes(searchQuery));
+
+            filtered.forEach(student => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'clearance-item';
+                itemDiv.innerHTML = `
+                    <div>
+                        <span style="font-weight:800; font-size:18px;">${student.name}</span>
+                        <span class="department-tag">${student.dept}</span>
+                    </div>
+                    <button class="btn-claim" onclick="claimClearance(${student.id})">CLAIM</button>
+                `;
+                listContainer.appendChild(itemDiv);
+            });
+        }
+
+        renderList();
+    </script>
+</body>
+</html>
