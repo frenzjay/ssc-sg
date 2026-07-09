@@ -141,6 +141,13 @@
             'denim': { img: 'images/denim.jpg', color: '#2563eb', label: 'DENIM & DIAMOND' },
         };
 
+        Object.values(themeData).forEach(theme => {
+            if (theme.img) {
+                const img = new Image();
+                img.src = theme.img;
+            }
+        });
+
         const themeSelect = document.getElementById('theme_select');
         const themeDisplay = document.getElementById('theme-display');
         const bgLayer1 = document.getElementById('bg-layer-1');
