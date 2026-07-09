@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Acquaintance Theme Voting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root { --dynamic-border: #16a34a; --ssc-gold: #d97706; --brand-black: #000000; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Press Start 2P', cursive; color: var(--brand-black); overflow: hidden; background-color: var(--brand-black); }
+        
+        .bg-layer { 
+            position: fixed; 
+            top: -10%; 
+            left: -10%; 
+            width: 120%; 
+            height: 120%; 
+            background-size: cover; 
+            background-position: center center; 
+            background-repeat: no-repeat; 
+            transition: opacity 1s ease-in-out; 
+            z-index: 1; 
+            filter: blur(80px) saturate(200%);
+        }
+        
+        #bg-layer-1 { opacity: 1; background-image: url('back.jpeg'); } 
+        #bg-layer-2 { opacity: 0; }
+        
+        .container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); border: 6px solid var(--dynamic-border); box-shadow: 10px 10px 0px var(--ssc-gold); z-index: 10; display: flex; flex-direction: column; padding: 25px; box-sizing: border-box; transition: border-color 1s ease-in-out; max-height: 95vh; overflow-y: auto; }
+        .logo-box { text-align: center; margin-bottom: 15px; }
+        .logo-box img { width: 70px; height: 70px; border: 4px solid var(--brand-black); background: #fff; border-radius: 50%; object-fit: cover; }
+        h2 { text-align: center; font-size: 0.9rem; margin: 5px 0 15px 0; text-transform: uppercase; line-height: 1.5; }
+        label { font-size: 0.6rem; text-transform: uppercase; font-weight: bold; margin-top: 15px; display: block; }
+        input[type="text"], select { width: 100%; padding: 12px; font-family: 'Press Start 2P', cursive; font-size: 0.6rem; border: 3px solid var(--brand-black); outline: none; box-sizing: border-box; margin-top: 5px; }
+        select { cursor: pointer; }
+        button { background: var(--dynamic-border); color: white; border: 4px solid var(--brand-black); padding: 15px; font-family: 'Press Start 2P', cursive; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 25px; transition: all 0.2s; text-align: center; display: block; box-sizing: border-box; }
+        button:hover { background: var(--ssc-gold); transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--brand-black); }
+        #theme-display { margin-top: 15px; text-align: center; font-size: 0.65rem; color: var(--dynamic-border); font-weight: bold; min-height: 15px; transition: color 1s ease-in-out;}
+        .bot-trap { position: absolute; left: -9999px; opacity: 0; }
+        #response-msg { text-align: center; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="bg-layer-1" class="bg-layer"></div>
+    <div id="bg-layer-2" class="bg-layer"></div>
+
+    <div class="container">
+        <div class="logo-box"><img src="../logo.jpg" alt="SSC Logo"></div>
+        
+        <div id="voting-area">
+            <h2>SSC ACQUAINTANCE THEME VOTE</h2>
+            <form id="votingForm">
+                <input type="text" name="user_email_trap" class="bot-trap" autocomplete="off" tabindex="-1">
+                
+                <label>Student ID:</label>
+                <input type="text" name="student_id" id="student_id" placeholder="e.g. 2024-0001" required autocomplete="off">
+                
+                <label>Full Name:</label>
+                <input type="text" name="student_name" id="student_name" placeholder="Kevin Saldia" required autocomplete="off">
+                
+                <label>Select Your Theme:</label>
+                <select id="theme_select" name="theme_select" required>
+                    <option value="default" disabled selected>TAP TO CHOOSE</option>
+                    <option value="y2k">1. Y2k</option>
+                    <option value="coachella">2. Coachella</option>
+                    <option value="barbie">3. Barbie & Ken</option>
+                    <option value="biniverse">4. Biniverse</option>
+                    <option value="rock90s">5. Rock of the 90s</option>
+                    <option value="inferno">6. Single's Inferno</option>
+                    <option value="tequila">7. Tequila Sunrise</option>
+                    <option value="denim">8. Denim & Diamond</option>
+                </select>
+
+                <button type="submit" id="submitBtn">CAST VOTE ></button>
+            </form>
+            <div id="theme-display"></div>
+        </div>
+
+        <div id="response-msg">
+            <h2 id="res-title"></h2>
+            <p id="res-body" style="font-size: 0.7rem; line-height: 1.5;"></p>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://itzfrenz.7m.pl/calendar/acquaintanceVote.php';
+
+        if (localStorage.getItem('ssc_party_voted') === 'true') {
+            document.getElementById('voting-area').style.display = 'none';
+            const resDiv = document.getElementById('response-msg');
+            resDiv.style.display = 'block';
+            document.getElementById('res-title').innerText = "ALREADY VOTED!";
+            document.getElementById('res-title').style.color = "var(--ssc-gold)";
+            document.getElementById('res-body').innerText = "Done casting";
+        }
+
+        document.getElementById('votingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+
+            const formData = new FormData(this);
+
+            fetch(API_URL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('voting-area').style.display = 'none';
+                const resDiv = document.getElementById('response-msg');
+                resDiv.style.display = 'block';
+                
+                document.getElementById('res-title').innerText = data.title;
+                document.getElementById('res-title').style.color = data.color;
+                document.documentElement.style.setProperty('--dynamic-border', data.color);
+                document.getElementById('res-body').innerText = data.message;
+
+                if(data.status === "success") {
+                    localStorage.setItem('ssc_party_voted', 'true');
+                }
+            })
+            .catch(error => {
+                btn.innerText = "CAST VOTE >";
+                btn.disabled = false;
+                alert("-1");
+            });
+        });
+
+        const themeData = {
+            'default': { img: 'back.jpeg', color: '#16a34a', label: '' },
+            'y2k': { img: 'images/y2k.jpg', color: '#ec4899', label: 'Y2K VIBES' },
+            'coachella': { img: 'images/coachella.jpg', color: '#e07a5f', label: 'COACHELLA' },
+            'barbie': { img: 'images/barbie.jpg', color: '#ff69b4', label: 'BARBIE & KEN' },
+            'biniverse': { img: 'images/biniverse.jpg', color: '#38bdf8', label: 'BINI-VERSE' },
+            'rock90s': { img: 'images/rock90s.jpg', color: '#dc2626', label: 'ROCK OF THE 90s' },
+            'inferno': { img: 'images/inferno.jpg', color: '#ff4500', label: "SINGLE'S INFERNO" },
+            'tequila': { img: 'images/tequila.jpg', color: '#ea580c', label: 'TEQUILA SUNRISE' },
+            'denim': { img: 'images/denim.jpg', color: '#2563eb', label: 'DENIM & DIAMOND' },
+        };
+
+        const themeSelect = document.getElementById('theme_select');
+        const themeDisplay = document.getElementById('theme-display');
+        const bgLayer1 = document.getElementById('bg-layer-1');
+        const bgLayer2 = document.getElementById('bg-layer-2');
+        let activeLayer = 1;
+
+        themeSelect?.addEventListener('change', function() {
+            const data = themeData[this.value];
+            document.documentElement.style.setProperty('--dynamic-border', data.color);
+            themeDisplay.innerText = data.label;
+            themeDisplay.style.color = data.color;
+
+            const newImage = `url('${data.img}')`;
+            if (activeLayer === 1) {
+                bgLayer2.style.backgroundImage = newImage;
+                bgLayer2.style.opacity = 1;
+                bgLayer1.style.opacity = 0;
+                activeLayer = 2;
+            } else {
+                bgLayer1.style.backgroundImage = newImage;
+                bgLayer1.style.opacity = 1;
+                bgLayer2.style.opacity = 0;
+                activeLayer = 1;
+            }
+        });
+    </script>
+</body>
+</html>
