@@ -32,11 +32,11 @@
     <div class="bg-pattern"></div>
 
     <div class="layout-wrapper">
-        <h2 id="loading">LOADING TALLY...</h2>
+        <h2 id="loading">LOADING</h2>
 
         <div id="results-card" class="capture-area" style="display: none;">
             <div class="logo-box"><img src="../logo.jpg" alt="SSC Logo"></div>
-            <h2>OFFICIAL TALLY</h2>
+            <h2>LIVE RESULT</h2>
             <div id="total-votes">TOTAL VOTES: 0</div>
             <div id="results-container">
                 </div>
@@ -52,7 +52,6 @@
             'y2k': { color: '#ec4899', label: 'Y2K Vibes' },
             'coachella': { color: '#e07a5f', label: 'Coachella' },
             'barbie': { color: '#ff69b4', label: 'Barbie & Ken' },
-            'biniverse': { color: '#38bdf8', label: 'Bini-verse' },
             'rock90s': { color: '#dc2626', label: 'Rock of the 90s' },
             'inferno': { color: '#ff4500', label: 'Single\'s Inferno' },
             'tequila': { color: '#ea580c', label: 'Tequila Sunrise' },
@@ -94,14 +93,14 @@
                 }
             })
             .catch(error => {
-                document.getElementById('loading').innerText = "CONNECTION ERROR.";
+                document.getElementById('loading').innerText = "-1";
                 document.getElementById('loading').style.color = "#dc2626";
             });
 
         document.getElementById('downloadBtn').addEventListener('click', function() {
             const btn = this;
             const originalText = btn.innerText;
-            btn.innerText = "GENERATING...";
+            btn.innerText = "GEN";
             
             const targetElement = document.getElementById('results-card');
             
