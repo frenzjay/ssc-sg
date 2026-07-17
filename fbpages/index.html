@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Directory - Facebook Pages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 15px;
+            font-family: 'Space Mono', 'Courier New', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: 3px solid var(--ssc-black);
+            box-shadow: 6px 6px 0px var(--ssc-black);
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--ssc-green);
+            box-shadow: 6px 6px 0px var(--ssc-green);
+            background: #f8fafc;
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .directory-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 4px solid var(--ssc-black);
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            color: var(--ssc-black);
+            display: inline-block;
+        }
+
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .page-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 20px;
+            border: 3px solid var(--ssc-black);
+            box-shadow: 6px 6px 0px var(--ssc-black);
+            transition: all 0.1s ease;
+        }
+
+        .page-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px var(--ssc-black);
+        }
+
+        .page-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+
+        .page-desc {
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn-visit {
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            border: 3px dashed var(--ssc-black);
+            background: var(--card-bg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 1000px;">
+        <header class="header window-box">
+            <div class="header-branding">
+                <img src="../logo.jpg" alt="SSC SG Logo" class="sg-logo" onerror="this.style.display='none'">
+                <div>
+                    <h1>SSC FB</h1>
+                    <p class="subtitle">OFFICIAL PAGES & ORGANIZATIONS</p>
+                </div>
+            </div>
+            <div class="toggle-wrapper">
+                <a href="../" style="text-decoration: none;">
+                    <button class="btn-retro">HOME</button>
+                </a>
+            </div>
+        </header>
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="SEARCH PAGES, OFFICES, OR ORGS">
+        </div>
+        <div class="directory-controls window-box" style="padding: 15px;">
+            <strong style="margin-right: 10px;">JUMP TO:</strong>
+            <button class="btn-sm" onclick="document.getElementById('cat-main')?.scrollIntoView({behavior: 'smooth'})">MAIN</button>
+            <button class="btn-sm" onclick="document.getElementById('cat-committee')?.scrollIntoView({behavior: 'smooth'})">COMMITTEES</button>
+            <button class="btn-sm" onclick="document.getElementById('cat-organizations')?.scrollIntoView({behavior: 'smooth'})">ORGANIZATIONS</button>
+        </div>
+        <main id="directory-container">
+        </main>
+    </div>
+
+    <script>
+        const rawData = [
+            { category: "MAIN", weight: 1, name: "Siquijor State College", url: "https://www.facebook.com/siquijorstatecollege.officialpage", desc: "Official Facebook page of Siquijor State College" },
+            
+            { category: "MAIN", weight: 2, name: "Siquijor State College - Student Government", url: "https://www.facebook.com/profile.php?id=100093271257569", desc: "Siquijor State College Student Government" },
+            { category: "MAIN", weight: 2, name: "SSCSG - College of Technology", url: "https://www.facebook.com/profile.php?id=100094078005578", desc: "College of Technology Student Government" },
+            { category: "MAIN", weight: 2, name: "College of Business and Management - SSC SG 2025-2026", url: "https://www.facebook.com/profile.php?id=100094203841652", desc: "The Producer of Global Entrepreneurs" },
+            { category: "MAIN", weight: 2, name: "College of Teacher Education - SSCSG", url: "https://www.facebook.com/profile.php?id=61566492393813", desc: "" },
+            { category: "MAIN", weight: 2, name: "College of Maritime Education - Student Government", url: "https://www.facebook.com/profile.php?id=61579132783471", desc: "" },
+            
+            { category: "MAIN", weight: 3, name: "Siquijor State College - Lazi Campus", url: "https://www.facebook.com/SSCLaziCampusPage", desc: "" },
+            { category: "MAIN", weight: 3, name: "College of Teacher Education - Siquijor State College", url: "https://www.facebook.com/profile.php?id=61586653992679", desc: "THE HOME OF TRUE CHAMPIONS" },
+            { category: "MAIN", weight: 3, name: "College of Arts and Sciences - Siquijor State College", url: "https://www.facebook.com/cassiquijorstate", desc: "Home of the Blazing Phoenix" },
+            { category: "MAIN", weight: 3, name: "College of Engineering - SSC", url: "https://www.facebook.com/collegeofengineeringssc", desc: "" },
+            { category: "MAIN", weight: 3, name: "College of Criminal Justice Education: Siquijor State College", url: "https://www.facebook.com/ssc.ccje", desc: "Audentes Fortuna Iuvat" },
+            { category: "MAIN", weight: 3, name: "SSC - Senior High School Department", url: "https://www.facebook.com/profile.php?id=100094310104277", desc: "Soar High, Senior High" },
+            { category: "MAIN", weight: 3, name: "Siquijor State College - Junior Highschool Department", url: "https://www.facebook.com/profile.php?id=61588067100257", desc: "Aim High, Junior High!" },
+            { category: "MAIN", weight: 3, name: "SSC High School", url: "https://www.facebook.com/SSCHSdepartment", desc: "" },
+            
+            { category: "MAIN", weight: 4, name: "OSAS - Siquijor State College", url: "https://www.facebook.com/sscianatheart", desc: "Dum spiro, spero." },
+            { category: "MAIN", weight: 4, name: "Siquijor State College - Library", url: "https://www.facebook.com/libraryssc", desc: "Official Facebook Page of the SSC Library" },
+            { category: "MAIN", weight: 4, name: "Siquijor State College - Office of Guidance and Counseling", url: "https://www.facebook.com/GuidanceSSC", desc: "" },
+            { category: "MAIN", weight: 4, name: "Siquijor State College - Clinic", url: "https://www.facebook.com/profile.php?id=61551841652529", desc: "Health for all!" },
+            { category: "MAIN", weight: 4, name: "Siquijor State College Research and Extension Services", url: "https://www.facebook.com/profile.php?id=61560261252714", desc: "" },
+            { category: "MAIN", weight: 4, name: "Fab Lab Siquijor State College", url: "https://www.facebook.com/profile.php?id=61565129047516", desc: "" },
+            
+            { category: "MAIN", weight: 5, name: "BS Development Communication - Siquijor State College", url: "https://www.facebook.com/profile.php?id=100087077833761", desc: "" },
+            { category: "MAIN", weight: 5, name: "Ang Lampara - The College of Teacher Education", url: "https://www.facebook.com/profile.php?id=61583590121477", desc: "" },
+            { category: "MAIN", weight: 5, name: "Political Science Society - Siquijor State College", url: "https://www.facebook.com/profile.php?id=61580909920250", desc: "" },
+            { category: "MAIN", weight: 5, name: "Society of Tourism Students - Siquijor State College", url: "https://www.facebook.com/profile.php?id=100090907838387", desc: "" },
+
+            { category: "COMMITTEE", weight: 6, name: "SSCSG InfoMedia Committee", url: "https://www.facebook.com/profile.php?id=61550598514548", desc: "" },
+            { category: "COMMITTEE", weight: 6, name: "SscSg Spiritual Committee", url: "https://www.facebook.com/profile.php?id=61554425781042", desc: "" },
+            { category: "COMMITTEE", weight: 6, name: "SSCSG Finance Committee", url: "https://www.facebook.com/profile.php?id=61551257415902", desc: "" },
+            { category: "COMMITTEE", weight: 6, name: "SSCSG Ways and Means Committee", url: "https://www.facebook.com/profile.php?id=61564849895374", desc: "" },
+            
+            { category: "ORGANIZATIONS", weight: 6, name: "SSC Combat Sports - Siquijor State College", url: "https://www.facebook.com/profile.php?id=61584578682303", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "LINGAW Club", url: "https://www.facebook.com/profile.php?id=100054312949224", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "The Reflector", url: "https://www.facebook.com/profile.php?id=61554425781042", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "BInd Tech Innovators - Siquijor State College", url: "https://www.facebook.com/profile.php?id=61568619150582", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Siquijor State College - ITSO", url: "https://www.facebook.com/profile.php?id=61553998990870", desc: "“Empowering Minds, Unleashing Innovation”" },
+            { category: "ORGANIZATIONS", weight: 6, name: "The SSC Spotlight", url: "https://www.facebook.com/profile.php?id=61582055527141", desc: "Siquijor State College Official Student Publication" },
+            { category: "ORGANIZATIONS", weight: 6, name: "SSC - Peer Facilitator Circle", url: "https://www.facebook.com/profile.php?id=61564021630332", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Siquijor State College - Numerical Nexus Club", url: "https://www.facebook.com/profile.php?id=61553292962120", desc: "Math Enthusiast" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Obsidian Resonance Guild ORG", url: "https://www.facebook.com/profile.php?id=61590016508059", desc: "Art Club" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Aurora Vanguard Esports", url: "https://www.facebook.com/profile.php?id=61565194358423", desc: "eSports Club" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Siquijor State College - Symphony Marching Band", url: "https://www.facebook.com/profile.php?id=61581262463034", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "SSC Chorale", url: "https://www.facebook.com/ssc.chorale24", desc: "Cantare, Laudare, Exultare" },
+            { category: "ORGANIZATIONS", weight: 6, name: "SSC - Kultura Filipina Folkloric Dance Troupe", url: "https://www.facebook.com/gabcarcueva06", desc: "Bridging Generations Through Dance" },
+            { category: "ORGANIZATIONS", weight: 6, name: "SSC Fiery Knights", url: "https://www.facebook.com/kahitpaanoph", desc: "Chess Club" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Siquijor State College, Samahan ng Pinag-isang Filipino SSC - SPF", url: "https://www.facebook.com/profile.php?id=100095586245301", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "563rd NROTC Unit Siquijor State College", url: "https://www.facebook.com/563rdnrotcussc", desc: "" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Marinero Newsletter", url: "https://www.facebook.com/profile.php?id=61581527244314", desc: "SSC-MEP’s Teatro Marinero’s Official Student Publication" },
+            { category: "ORGANIZATIONS", weight: 6, name: "Active Beginners Corporation", url: "https://www.facebook.com/activebeginnersclub1239", desc: "" }
+        ];
+
+        rawData.sort((a, b) => {
+            if (a.weight !== b.weight) return a.weight - b.weight;
+            return a.name.localeCompare(b.name);
+        });
+
+        const container = document.getElementById('directory-container');
+
+        function renderDirectory(dataToRender) {
+            container.innerHTML = '';
+            const categories = {
+                "MAIN": { id: "cat-main", color: "var(--ssc-gold)", data: [] },
+                "COMMITTEE": { id: "cat-committee", color: "var(--ssc-black)", data: [] },
+                "ORGANIZATIONS": { id: "cat-organizations", color: "var(--ssc-green)", data: [] }
+            };
+
+            dataToRender.forEach(page => {
+                if(categories[page.category]) {
+                    categories[page.category].data.push(page);
+                }
+            });
+
+            let hasResults = false;
+
+            Object.keys(categories).forEach(catKey => {
+                const cat = categories[catKey];
+                                if (cat.data.length === 0) return; 
+                hasResults = true;
+                
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                section.id = cat.id;
+
+                const header = document.createElement('h2');
+                header.className = 'category-header';
+                header.style.borderColor = cat.color;
+                header.innerText = catKey + " PAGES";
+                section.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'directory-grid';
+
+                cat.data.forEach(page => {
+                    const card = document.createElement('div');
+                    card.className = 'page-card';
+                    card.style.borderTopColor = cat.color;
+
+                    const descHtml = page.desc ? `<p class="page-desc">"${page.desc}"</p>` : `<p class="page-desc" style="font-style: italic; opacity: 0.5;"></p>`;
+
+                    card.innerHTML = `
+                        <div>
+                            <h3 class="page-name">${page.name}</h3>
+                            ${descHtml}
+                        </div>
+                        <a href="${page.url}" target="_blank" rel="noopener noreferrer" class="btn-retro btn-visit">VISIT PAGE ↗</a>
+                    `;
+                    grid.appendChild(card);
+                });
+                section.appendChild(grid);
+                container.appendChild(section);
+            });
+            if (!hasResults) {
+                container.innerHTML = `
+                    <div class="no-results window-box">
+                        <h2 style="margin-top: 0;">[ ERROR: NO DATA FOUND ]</h2>
+                        <p style="margin-bottom: 0;">Try adjusting your search keywords.</p>
+                    </div>
+                `;
+            }
+        }
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            
+            const filteredData = rawData.filter(page => {
+                return page.name.toLowerCase().includes(query) || 
+                       page.desc.toLowerCase().includes(query) ||
+                       page.category.toLowerCase().includes(query);
+            });
+            
+            renderDirectory(filteredData);
+        });
+        renderDirectory(rawData);
+    </script>
+</body>
+</html>
