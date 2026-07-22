@@ -15,7 +15,8 @@
         .logo-box { text-align: center; margin-bottom: 15px; }
         .logo-box img { width: 70px; height: 70px; border: 4px solid var(--brand-black); background: #fff; border-radius: 50%; object-fit: cover; }
         h2 { text-align: center; font-size: 0.9rem; margin: 5px 0 15px 0; text-transform: uppercase; line-height: 1.5; }
-        #total-votes { text-align: center; font-size: 0.6rem; color: var(--ssc-gold); margin-bottom: 20px; }
+        #total-votes { text-align: center; font-size: 0.6rem; color: var(--ssc-gold); margin-bottom: 8px; }
+        #timestamp { text-align: center; font-size: 0.45rem; color: #555; margin-bottom: 20px; line-height: 1.4; }
         .result-item { margin-bottom: 15px; }
         .result-label { display: flex; justify-content: space-between; font-size: 0.55rem; margin-bottom: 5px; text-transform: uppercase; }
         .bar-container { width: 100%; background: #ddd; height: 15px; border: 3px solid var(--brand-black); box-sizing: border-box; }
@@ -38,6 +39,7 @@
             <div class="logo-box"><img src="../logo.jpg" alt="SSC Logo"></div>
             <h2>LIVE RESULT</h2>
             <div id="total-votes">TOTAL VOTES: 0</div>
+            <div id="timestamp"></div>
             <div id="results-container">
                 </div>
         </div>
@@ -67,6 +69,10 @@
                     document.getElementById('results-card').style.display = 'block';
                     document.getElementById('downloadBtn').style.display = 'block';
                     document.getElementById('total-votes').innerText = `TOTAL VOTES: ${data.total}`;
+
+                    const now = new Date();
+                    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                    document.getElementById('timestamp').innerText = `AS OF ${now.toLocaleString('en-US', dateOptions).toUpperCase()}`;
 
                     const container = document.getElementById('results-container');
                     
