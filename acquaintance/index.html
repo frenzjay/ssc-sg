@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSC Acquaintance Theme Voting</title>
+    <title>SSC Acquaintance Theme Voting - CLOSED</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        :root { --dynamic-border: #16a34a; --ssc-gold: #d97706; --brand-black: #000000; }
+        :root { --dynamic-border: #dc2626; --ssc-gold: #d97706; --brand-black: #000000; }
         
         body, html { 
             margin: 0; 
@@ -30,13 +30,12 @@
             background-size: cover; 
             background-position: center center; 
             background-repeat: no-repeat; 
-            transition: opacity 1s ease-in-out; 
             z-index: 1; 
             filter: blur(80px) saturate(200%);
         }
         
         #bg-layer-1 { opacity: 1; background-image: url('back.jpeg'); } 
-        #bg-layer-2 { opacity: 0; }
+        
         .container { 
             position: relative; 
             width: 90%; 
@@ -49,175 +48,32 @@
             z-index: 10; 
             display: flex; 
             flex-direction: column; 
-            padding: 25px; 
+            padding: 35px 25px; 
             box-sizing: border-box; 
-            transition: border-color 1s ease-in-out; 
         }
 
-        .logo-box { text-align: center; margin-bottom: 15px; }
+        .logo-box { text-align: center; margin-bottom: 25px; }
         .logo-box img { width: 70px; height: 70px; border: 4px solid var(--brand-black); background: #fff; border-radius: 50%; object-fit: cover; }
-        h2 { text-align: center; font-size: 0.9rem; margin: 5px 0 15px 0; text-transform: uppercase; line-height: 1.5; }
-        label { font-size: 0.6rem; text-transform: uppercase; font-weight: bold; margin-top: 15px; display: block; }
-        input[type="text"], select { width: 100%; padding: 12px; font-family: 'Press Start 2P', cursive; font-size: 0.6rem; border: 3px solid var(--brand-black); outline: none; box-sizing: border-box; margin-top: 5px; }
-        select { cursor: pointer; }
-        button { background: var(--dynamic-border); color: white; border: 4px solid var(--brand-black); padding: 15px; font-family: 'Press Start 2P', cursive; font-size: 0.8rem; cursor: pointer; text-transform: uppercase; width: 100%; margin-top: 25px; transition: all 0.2s; text-align: center; display: block; box-sizing: border-box; }
-        button:hover { background: var(--ssc-gold); transform: translate(-2px, -2px); box-shadow: 4px 4px 0px var(--brand-black); }
-        #theme-display { margin-top: 15px; text-align: center; font-size: 0.65rem; color: var(--dynamic-border); font-weight: bold; min-height: 15px; transition: color 1s ease-in-out;}
         
-        #outfit-preview-container { display: none; text-align: center; margin-top: 15px; }
-        #outfit-preview-container img { width: 100%; max-width: 250px; height: auto; border: 4px solid var(--dynamic-border); box-shadow: 4px 4px 0px var(--brand-black); object-fit: cover; margin: 0 auto; display: block; transition: border-color 1s ease-in-out; background-color: var(--brand-black); }
-        .preview-label { font-size: 0.5rem; margin-bottom: 8px; text-transform: uppercase; color: var(--brand-black); }
-
-        .bot-trap { position: absolute; left: -9999px; opacity: 0; }
-        #response-msg { text-align: center; display: none; }
+        #response-msg { text-align: center; display: block; }
+        #response-msg h2 { font-size: 1.1rem; margin: 10px 0 20px 0; text-transform: uppercase; line-height: 1.5; color: var(--dynamic-border); }
+        #response-msg p { font-size: 0.7rem; line-height: 1.8; color: var(--brand-black); }
     </style>
 </head>
 <body>
 
     <div id="bg-layer-1" class="bg-layer"></div>
-    <div id="bg-layer-2" class="bg-layer"></div>
 
     <div class="container">
         <div class="logo-box"><img src="../logo.jpg" alt="SSC Logo"></div>
-        
-        <div id="voting-area">
-            <h2>SSC ACQUAINTANCE THEME VOTE</h2>
-            <form id="votingForm">
-                <input type="text" name="user_email_trap" class="bot-trap" autocomplete="off" tabindex="-1">
-                
-                <label>Student ID:</label>
-                <input type="text" name="student_id" id="student_id" placeholder="e.g. 2025-11262-1" required autocomplete="off">
-                
-                <label>Full Name:</label>
-                <input type="text" name="student_name" id="student_name" placeholder="Kevin Saldia" required autocomplete="off">
-                
-                <label>Select Your Theme:</label>
-                <select id="theme_select" name="theme_select" required>
-                    <option value="default" disabled selected>TAP TO CHOOSE</option>
-                    <option value="y2k">1. Y2k</option>
-                    <option value="coachella">2. Coachella</option>
-                    <option value="barbie">3. Barbie & Ken</option>
-                    <option value="rock90s">4. Rock of the 90s</option>
-                    <option value="inferno">5. Single's Inferno</option>
-                    <option value="tequila">6. Tequila Sunrise</option>
-                    <option value="denim">7. Denim & Diamond</option>
-                </select>
-
-                <button type="submit" id="submitBtn">CAST VOTE ></button>
-            </form>
-            <div id="theme-display"></div>
-            
-            <div id="outfit-preview-container">
-                <div class="preview-label">OUTFIT PREVIEW</div>
-                <img id="outfit-preview-img" src="" alt="Outfit Preview">
-            </div>
-        </div>
 
         <div id="response-msg">
-            <h2 id="res-title"></h2>
-            <p id="res-body" style="font-size: 0.7rem; line-height: 1.5;"></p>
+            <h2>VOTING CLOSED!</h2>
+            <p>Thank you for your participation.</p>
+            <br>
+            <p>The theme voting for the SSC Acquaintance Party has officially concluded.</p>
         </div>
     </div>
 
-    <script>
-        const API_URL = 'https://itzfrenz.7m.pl/calendar/acquaintanceVote.php';
-
-        if (localStorage.getItem('ssc_party_voted') === 'true') {
-            document.getElementById('voting-area').style.display = 'none';
-            const resDiv = document.getElementById('response-msg');
-            resDiv.style.display = 'block';
-            document.getElementById('res-title').innerText = "ALREADY VOTED!";
-            document.getElementById('res-title').style.color = "var(--ssc-gold)";
-            document.getElementById('res-body').innerText = "Done casting";
-        }
-
-        document.getElementById('votingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "SENDING...";
-            btn.disabled = true;
-
-            const formData = new FormData(this);
-
-            fetch(API_URL, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('voting-area').style.display = 'none';
-                const resDiv = document.getElementById('response-msg');
-                resDiv.style.display = 'block';
-                
-                document.getElementById('res-title').innerText = data.title;
-                document.getElementById('res-title').style.color = data.color;
-                document.documentElement.style.setProperty('--dynamic-border', data.color);
-                document.getElementById('res-body').innerText = data.message;
-
-                if(data.status === "success") {
-                    localStorage.setItem('ssc_party_voted', 'true');
-                }
-            })
-            .catch(error => {
-                btn.innerText = "CAST VOTE >";
-                btn.disabled = false;
-                alert("-1");
-            });
-        });
-
-        const themeData = {
-            'default': { img: 'back.jpeg', color: '#16a34a', label: '', prevImg: '' },
-            'y2k': { img: 'images/y2k.jpg', color: '#ec4899', label: 'Y2K VIBES', prevImg: 'imagesPrev/y2k.jpeg' },
-            'coachella': { img: 'images/coachella.jpg', color: '#e07a5f', label: 'COACHELLA', prevImg: 'imagesPrev/coachella.jpeg' },
-            'barbie': { img: 'images/barbie.jpg', color: '#ff69b4', label: 'BARBIE & KEN', prevImg: 'imagesPrev/barbie.jpeg' },
-            'rock90s': { img: 'images/rock90s.jpg', color: '#dc2626', label: 'ROCK OF THE 90s', prevImg: 'imagesPrev/rock.jpeg' },
-            'inferno': { img: 'images/inferno.jpg', color: '#ff4500', label: "SINGLE'S INFERNO", prevImg: 'imagesPrev/single.jpeg' },
-            'tequila': { img: 'images/tequila.jpg', color: '#ea580c', label: 'TEQUILA SUNRISE', prevImg: 'imagesPrev/tequila.jpeg' },
-            'denim': { img: 'images/denim.jpg', color: '#2563eb', label: 'DENIM & DIAMOND', prevImg: 'imagesPrev/denim.jpeg' },
-        };
-        Object.values(themeData).forEach(theme => {
-            if (theme.img) {
-                const img = new Image();
-                img.src = theme.img;
-            }
-        });
-
-        const themeSelect = document.getElementById('theme_select');
-        const themeDisplay = document.getElementById('theme-display');
-        const bgLayer1 = document.getElementById('bg-layer-1');
-        const bgLayer2 = document.getElementById('bg-layer-2');
-        const previewContainer = document.getElementById('outfit-preview-container');
-        const previewImg = document.getElementById('outfit-preview-img');
-        let activeLayer = 1;
-
-        themeSelect?.addEventListener('change', function() {
-            const data = themeData[this.value];
-            document.documentElement.style.setProperty('--dynamic-border', data.color);
-            themeDisplay.innerText = data.label;
-            themeDisplay.style.color = data.color;
-            if (data.prevImg) {
-                previewImg.src = data.prevImg;
-                previewContainer.style.display = 'block';
-                
-                setTimeout(() => {
-                    previewContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                }, 100);
-            } else {
-                previewContainer.style.display = 'none';
-            }
-            const newImage = `url('${data.img}')`;
-            if (activeLayer === 1) {
-                bgLayer2.style.backgroundImage = newImage;
-                bgLayer2.style.opacity = 1;
-                bgLayer1.style.opacity = 0;
-                activeLayer = 2;
-            } else {
-                bgLayer1.style.backgroundImage = newImage;
-                bgLayer1.style.opacity = 1;
-                bgLayer2.style.opacity = 0;
-                activeLayer = 1;
-            }
-        });
-    </script>
 </body>
 </html>

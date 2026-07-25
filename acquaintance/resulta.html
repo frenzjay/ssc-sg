@@ -10,22 +10,36 @@
         :root { --dynamic-border: #16a34a; --ssc-gold: #d97706; --brand-black: #000000; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: 'Press Start 2P', cursive; color: var(--brand-black); background-color: #111; overflow-y: auto; }
         .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient( 45deg, #222, #222 10px, #111 10px, #111 20px ); z-index: 1; }
-        .layout-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .capture-area { background: rgba(255, 255, 255, 0.95); border: 6px solid var(--dynamic-border); box-shadow: 10px 10px 0px var(--ssc-gold); width: 100%; max-width: 500px; padding: 25px; box-sizing: border-box; }
+        .layout-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; padding: 20px; box-sizing: border-box; }
+        
+        .capture-area { background: rgba(255, 255, 255, 0.95); border: 6px solid var(--dynamic-border); box-shadow: 10px 10px 0px var(--ssc-gold); width: 100%; max-width: 600px; padding: 25px; box-sizing: border-box; margin-top: 20px; }
         .logo-box { text-align: center; margin-bottom: 15px; }
         .logo-box img { width: 70px; height: 70px; border: 4px solid var(--brand-black); background: #fff; border-radius: 50%; object-fit: cover; }
-        h2 { text-align: center; font-size: 0.9rem; margin: 5px 0 15px 0; text-transform: uppercase; line-height: 1.5; }
-        #total-votes { text-align: center; font-size: 0.6rem; color: var(--ssc-gold); margin-bottom: 8px; }
-        #timestamp { text-align: center; font-size: 0.45rem; color: #555; margin-bottom: 20px; line-height: 1.4; }
-        .result-item { margin-bottom: 15px; }
-        .result-label { display: flex; justify-content: space-between; font-size: 0.55rem; margin-bottom: 5px; text-transform: uppercase; }
-        .bar-container { width: 100%; background: #ddd; height: 15px; border: 3px solid var(--brand-black); box-sizing: border-box; }
+        h2 { text-align: center; font-size: 1rem; margin: 5px 0 20px 0; text-transform: uppercase; line-height: 1.5; color: var(--brand-black); }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+        .stat-box { border: 4px solid var(--brand-black); background: #f8f9fa; padding: 15px 10px; text-align: center; box-shadow: 4px 4px 0px #ddd; }
+        .stat-box.highlight { background: var(--ssc-gold); color: white; border-color: var(--brand-black); box-shadow: 4px 4px 0px var(--brand-black); }
+        .stat-box.highlight .stat-title, .stat-box.highlight .stat-value { color: white; }
+        .stat-title { font-size: 0.45rem; color: #666; margin-bottom: 8px; text-transform: uppercase; }
+        .stat-value { font-size: 0.65rem; font-weight: bold; }
+        
+        .leaderboard-title { font-size: 0.7rem; border-bottom: 4px solid var(--brand-black); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .result-item { margin-bottom: 20px; display: flex; align-items: center; }
+        .rank-number { font-size: 0.9rem; font-weight: bold; width: 40px; text-align: center; color: var(--brand-black); text-shadow: 2px 2px 0px #ddd; }
+        .rank-1 { color: var(--ssc-gold); text-shadow: 2px 2px 0px var(--brand-black); font-size: 1.1rem; }
+        .bar-wrapper { flex-grow: 1; }
+        .result-label { display: flex; justify-content: space-between; font-size: 0.55rem; margin-bottom: 6px; text-transform: uppercase; font-weight: bold; }
+        .bar-container { width: 100%; background: #e5e5e5; height: 18px; border: 3px solid var(--brand-black); box-sizing: border-box; position: relative; }
         .bar-fill { height: 100%; background: var(--dynamic-border); width: 0%; transition: width 1s ease-out; }
-
-        button { background: var(--ssc-gold); color: white; border: 4px solid var(--brand-black); padding: 15px; font-family: 'Press Start 2P', cursive; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; width: 100%; max-width: 500px; margin-top: 25px; transition: all 0.2s; box-sizing: border-box; box-shadow: 6px 6px 0px var(--brand-black); }
+        
+        #timestamp { text-align: center; font-size: 0.45rem; color: #555; margin-top: 25px; line-height: 1.4; border-top: 2px dashed #ccc; padding-top: 15px; }
+        
+        button { background: var(--ssc-gold); color: white; border: 4px solid var(--brand-black); padding: 15px; font-family: 'Press Start 2P', cursive; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; width: 100%; max-width: 600px; margin-top: 25px; transition: all 0.2s; box-sizing: border-box; box-shadow: 6px 6px 0px var(--brand-black); margin-bottom: 40px; }
         button:hover { background: #b45309; transform: translate(-2px, -2px); box-shadow: 8px 8px 0px var(--brand-black); }
         
-        #loading { text-align: center; font-size: 0.7rem; color: #fff; position: relative; z-index: 10; }
+        #loading { text-align: center; font-size: 0.7rem; color: #fff; position: relative; z-index: 10; margin-top: 40px; }
     </style>
 </head>
 <body>
@@ -37,14 +51,36 @@
 
         <div id="results-card" class="capture-area" style="display: none;">
             <div class="logo-box"><img src="../logo.jpg" alt="SSC Logo"></div>
-            <h2>LIVE RESULT</h2>
-            <div id="total-votes">TOTAL VOTES: 0</div>
-            <div id="timestamp"></div>
-            <div id="results-container">
+            <h2>OFFICIAL TALLY</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-title">TOTAL VOTES</div>
+                    <div class="stat-value" id="stat-total">0</div>
                 </div>
+                <div class="stat-box highlight">
+                    <div class="stat-title">LEADING THEME</div>
+                    <div class="stat-value" id="stat-leader">N/A</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">MARGIN</div>
+                    <div class="stat-value" id="stat-margin">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">RUNNER UP</div>
+                    <div class="stat-value" id="stat-runnerup">N/A</div>
+                </div>
+            </div>
+
+            <div class="leaderboard-title">LEADERBOARD</div>
+            
+            <div id="results-container">
+            </div>
+
+            <div id="timestamp"></div>
         </div>
 
-        <button id="downloadBtn" style="display: none;">Save</button>
+        <button id="downloadBtn" style="display: none;">SAVE IMAGE</button>
     </div>
 
     <script>
@@ -54,6 +90,7 @@
             'y2k': { color: '#ec4899', label: 'Y2K Vibes' },
             'coachella': { color: '#e07a5f', label: 'Coachella' },
             'barbie': { color: '#ff69b4', label: 'Barbie & Ken' },
+            'biniverse': { color: '#38bdf8', label: 'Bini-verse' },
             'rock90s': { color: '#dc2626', label: 'Rock of the 90s' },
             'inferno': { color: '#ff4500', label: 'Single\'s Inferno' },
             'tequila': { color: '#ea580c', label: 'Tequila Sunrise' },
@@ -65,36 +102,58 @@
             .then(data => {
                 document.getElementById('loading').style.display = 'none';
                 
-                if(data.status === 'success') {
+                if(data.status === 'success' && data.data.length > 0) {
                     document.getElementById('results-card').style.display = 'block';
                     document.getElementById('downloadBtn').style.display = 'block';
-                    document.getElementById('total-votes').innerText = `TOTAL VOTES: ${data.total}`;
+                    
+                    const leader = data.data[0];
+                    const runnerUp = data.data.length > 1 ? data.data[1] : null;
+                    const margin = runnerUp ? (leader.votes - runnerUp.votes) : leader.votes;
+                    
+                    const leaderTheme = themeData[leader.theme] ? themeData[leader.theme].label : leader.theme;
+                    const runnerUpTheme = runnerUp && themeData[runnerUp.theme] ? themeData[runnerUp.theme].label : 'NONE';
+                    
+                    document.getElementById('stat-total').innerText = data.total;
+                    document.getElementById('stat-leader').innerText = leaderTheme;
+                    document.getElementById('stat-margin').innerText = `+${margin} VOTES`;
+                    document.getElementById('stat-runnerup').innerText = runnerUpTheme;
+
+                    if (themeData[leader.theme]) {
+                        document.documentElement.style.setProperty('--dynamic-border', themeData[leader.theme].color);
+                    }
 
                     const now = new Date();
                     const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                    document.getElementById('timestamp').innerText = `AS OF ${now.toLocaleString('en-US', dateOptions).toUpperCase()}`;
+                    document.getElementById('timestamp').innerText = `GENERATED ON ${now.toLocaleString('en-US', dateOptions).toUpperCase()}`;
 
                     const container = document.getElementById('results-container');
                     
-                    data.data.forEach(item => {
+                    data.data.forEach((item, index) => {
                         const themeInfo = themeData[item.theme] || { color: '#16a34a', label: item.theme };
                         const percentage = data.total > 0 ? ((item.votes / data.total) * 100).toFixed(1) : 0;
+                        const rankClass = index === 0 ? 'rank-number rank-1' : 'rank-number';
                         
                         const itemHtml = `
                             <div class="result-item">
-                                <div class="result-label" style="color: ${themeInfo.color}">
-                                    <span>${themeInfo.label}</span>
-                                    <span>${item.votes} (${percentage}%)</span>
-                                </div>
-                                <div class="bar-container">
-                                    <div class="bar-fill" style="background-color: ${themeInfo.color}; width: ${percentage}%"></div>
+                                <div class="${rankClass}">#${index + 1}</div>
+                                <div class="bar-wrapper">
+                                    <div class="result-label" style="color: ${themeInfo.color}">
+                                        <span>${themeInfo.label}</span>
+                                        <span>${item.votes} (${percentage}%)</span>
+                                    </div>
+                                    <div class="bar-container">
+                                        <div class="bar-fill" style="background-color: ${themeInfo.color}; width: ${percentage}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         `;
                         container.innerHTML += itemHtml;
                     });
+                } else if (data.status === 'success') {
+                    document.getElementById('loading').innerText = "-1";
+                    document.getElementById('loading').style.display = 'block';
                 } else {
-                    document.getElementById('loading').innerText = "ERROR LOADING RESULTS.";
+                    document.getElementById('loading').innerText = "-1";
                     document.getElementById('loading').style.display = 'block';
                 }
             })
@@ -106,7 +165,7 @@
         document.getElementById('downloadBtn').addEventListener('click', function() {
             const btn = this;
             const originalText = btn.innerText;
-            btn.innerText = "GEN";
+            btn.innerText = "SAVING";
             
             const targetElement = document.getElementById('results-card');
             
@@ -117,7 +176,7 @@
             }).then(canvas => {
                 const imageURI = canvas.toDataURL("image/png");
                 const link = document.createElement("a");
-                link.download = "ssc_aq_results.png";
+                link.download = "ssc_detailed_results.png";
                 link.href = imageURI;
                 document.body.appendChild(link);
                 link.click();
