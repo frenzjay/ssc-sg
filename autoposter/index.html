@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>autoPub Studio — SSC-SG Publication &amp; Frame Maker</title>
+  <script>
+    (function() {
+      var p = window.location.pathname;
+      if (!p.endsWith('/') && !p.match(/\.[a-zA-Z0-9]+$/)) {
+        document.write('<base href="' + p + '/">');
+        try { window.history.replaceState(null, '', p + '/' + window.location.search + window.location.hash); } catch(e) {}
+      }
+    })();
+  </script>
+  <meta name="description" content="Offline editorial studio for Siquijor State College Student Government pubmats: 30 transparent editable SVG layouts, live typography, and batch framing.">
+  <link rel="shortcut icon" href="4x3.png" type="image/png">
+  <!-- Editorial & Humanist Typography (gracefully falls back offline to Noto Serif, Lato, Ubuntu Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Lato:wght@400;700;900&amp;family=Newsreader:opsz,wght@6..72,600;6..72,700&amp;family=Noto+Serif:wght@700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <div class="studio-shell">
+    <!-- =================================================================== -->
+    <!-- TOP COMMAND BAR                                                     -->
+    <!-- =================================================================== -->
+    <header class="topbar">
+      <div class="topbar-brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div class="brand-copy">
+          <span class="brand-title">autoPub</span>
+          <span class="brand-sub">SSC-SG Editorial Studio</span>
+        </div>
+        <span class="save-pill" id="saveStatusBadge" title="All photos, crops, and text edits are automatically saved locally in your browser">
+          <span class="save-dot" aria-hidden="true"></span>
+          <span id="saveStatusText">Saved locally</span>
+        </span>
+      </div>
+
+      <!-- Center Format / Aspect Switcher -->
+      <div class="topbar-center">
+        <div class="segmented-control" id="ratioSegmented" role="group" aria-label="Output aspect ratio">
+          <button type="button" class="seg-btn active" data-ratio="ssc" title="SSC Native A4 Landscape (2000×1414)">
+            SSC <span class="mono-dim">2000×1414</span>
+          </button>
+          <button type="button" class="seg-btn" data-ratio="4:3" title="Standard 4:3 Landscape">
+            4:3
+          </button>
+          <button type="button" class="seg-btn" data-ratio="16:9" title="Widescreen 16:9">
+            16:9
+          </button>
+          <button type="button" class="seg-btn" data-ratio="auto" title="Auto-detect 4:3 or 16:9 per photo">
+            Auto
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Global Actions -->
+      <div class="topbar-actions">
+        <input type="file" id="fileInput" multiple accept="image/png, image/jpeg, image/webp" hidden>
+        <button type="button" id="btnAddPhotosTop" class="btn btn-secondary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          <span>Add Photos</span>
+        </button>
+
+        <div class="export-Menu-wrap">
+          <button type="button" id="btnResetWorkspace" class="btn btn-ghost btn-reset-top" title="Reset all progress, photos, and text back to defaults">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <span>Reset</span>
+          </button>
+          <button type="button" id="btnOpenSettings" class="btn btn-ghost btn-icon" title="Export Format &amp; Resolution Settings" aria-label="Export settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </button>
+        </div>
+
+        <button type="button" id="btnPrimaryExport" class="btn btn-primary" title="Export active post or download all photos as ZIP">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="primaryExportLabel">Export Overlay PNG</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Panel Switcher (Visible on tablets/phones only) -->
+    <nav class="mobile-workspace-tabs" id="mobileWorkspaceTabs" aria-label="Workspace panels">
+      <button type="button" class="mob-tab active" data-pane="stage">Canvas &amp; Photos</button>
+      <button type="button" class="mob-tab" data-pane="templates">Layouts (30)</button>
+      <button type="button" class="mob-tab" data-pane="inspector">Edit Text</button>
+    </nav>
+
+    <!-- =================================================================== -->
+    <!-- 3-ZONE STUDIO BODY                                                  -->
+    <!-- =================================================================== -->
+    <main class="studio-main">
+      <!-- ZONE 1 (LEFT): LAYOUTS & CUSTOM ASSETS DRAWER -->
+      <aside class="panel panel-left" id="paneTemplates">
+        <div class="panel-header">
+          <h2 class="panel-title">Publication Layouts</h2>
+          <div class="mode-pills" id="templateModeTabs">
+            <button type="button" class="mode-pill active" data-mode="preset">30 Presets</button>
+            <button type="button" class="mode-pill" data-mode="svg">Custom SVG</button>
+            <button type="button" class="mode-pill" data-mode="png">PNG Borders</button>
+          </div>
+        </div>
+
+        <!-- Mode A: 30 Built-in SSC-SG Presets -->
+        <div id="panelModePreset" class="drawer-body">
+          <div class="drawer-controls">
+            <div class="search-box">
+              <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="search" id="presetSearchInput" placeholder="Filter 30 layouts (e.g. arch, news, wave)...">
+            </div>
+            <div class="filter-tabs" id="presetSeriesFilter">
+              <button type="button" class="filter-tab active" data-series="all">All <span>30</span></button>
+              <button type="button" class="filter-tab" data-series="drafts_v3">Editorial <span>10</span></button>
+              <button type="button" class="filter-tab" data-series="drafts_v2">Creative <span>10</span></button>
+              <button type="button" class="filter-tab" data-series="drafts">Glow <span>10</span></button>
+            </div>
+          </div>
+
+          <div id="presetGalleryGrid" class="preset-grid" role="listbox" aria-label="30 SSC-SG pubmat templates">
+            <!-- Populated by app.js -->
+          </div>
+        </div>
+
+        <!-- Mode B: Upload Custom Editable SVG -->
+        <div id="panelModeSvg" class="drawer-body" hidden>
+          <div class="drawer-pad">
+            <p class="helper-note">
+              Upload any transparent <code>.svg</code> template (including files edited in Inkscape or Figma). Text elements with IDs <code>field-heading</code>, <code>field-caption</code>, <code>field-category</code>, and <code>field-date</code> remain live-editable in the right panel.
+            </p>
+            <div class="upload-slot-card">
+              <div class="slot-thumb checker-bg">
+                <img id="previewCustomSvg" alt="Uploaded SVG preview" hidden>
+                <span id="placeholderCustomSvg" class="slot-empty-label">No SVG loaded</span>
+              </div>
+              <div class="slot-meta">
+                <strong id="customSvgFilename">Upload .svg overlay</strong>
+                <span id="badgeStatusSvg" class="status-tag">Waiting for file</span>
+              </div>
+              <div class="slot-btns">
+                <input type="file" id="inputCustomSvg" accept=".svg,image/svg+xml" hidden>
+                <button type="button" id="btnUploadCustomSvg" class="btn btn-secondary btn-sm">Choose .SVG</button>
+                <button type="button" id="btnClearCustomSvg" class="btn btn-ghost btn-sm">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode C: Static PNG Borders (4:3 & 16:9) -->
+        <div id="panelModePng" class="drawer-body" hidden>
+          <div class="drawer-pad">
+            <p class="helper-note">
+              Use static transparent PNG border files for 4:3 and 16:9 photos. If only one ratio is uploaded, the other defaults to a clean plain crop.
+            </p>
+
+            <div class="upload-slot-card">
+              <div class="slot-row-head">
+                <strong>4:3 PNG Border</strong>
+                <span id="badgeStatus4x3" class="status-tag">Demo</span>
+              </div>
+              <div class="slot-thumb checker-bg">
+                <img id="previewBorder4x3" alt="4:3 PNG border preview">
+                <span id="placeholder4x3" class="slot-empty-label" hidden>None (Plain Crop)</span>
+              </div>
+              <div class="slot-btns">
+                <input type="file" id="inputCustomBorder4x3" accept="image/png" hidden>
+                <button type="button" id="btnUploadBorder4x3" class="btn btn-secondary btn-sm">Upload PNG</button>
+                <button type="button" id="btnNone4x3" class="btn btn-ghost btn-sm">None</button>
+                <button type="button" id="btnSample4x3" class="btn btn-ghost btn-sm">Demo</button>
+              </div>
+            </div>
+
+            <div class="upload-slot-card">
+              <div class="slot-row-head">
+                <strong>16:9 PNG Border</strong>
+                <span id="badgeStatus16x9" class="status-tag">Demo</span>
+              </div>
+              <div class="slot-thumb checker-bg">
+                <img id="previewBorder16x9" alt="16:9 PNG border preview">
+                <span id="placeholder16x9" class="slot-empty-label" hidden>None (Plain Crop)</span>
+              </div>
+              <div class="slot-btns">
+                <input type="file" id="inputCustomBorder16x9" accept="image/png" hidden>
+                <button type="button" id="btnUploadBorder16x9" class="btn btn-secondary btn-sm">Upload PNG</button>
+                <button type="button" id="btnNone16x9" class="btn btn-ghost btn-sm">None</button>
+                <button type="button" id="btnSample16x9" class="btn btn-ghost btn-sm">Demo</button>
+              </div>
+            </div>
+
+            <button type="button" id="btnResetBorders" class="btn btn-ghost btn-sm" style="width:100%;">Reset Both to Demo</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ZONE 2 (CENTER): INTERACTIVE STAGE & PHOTO FILMSTRIP -->
+      <section class="stage-column active-mobile-pane" id="paneStage">
+        <!-- Stage Top Info Bar -->
+        <div class="stage-topbar">
+          <div class="stage-context">
+            <span class="stage-tpl-name" id="activePresetName">V3-01 // Breaking News Feature</span>
+            <span class="stage-sep">&middot;</span>
+            <span class="mono-meta" id="stageResolutionMeta">2000 × 1414 px</span>
+          </div>
+
+          <!-- Template Backdrop Switcher (when no photo is selected) & Overlay Exporters -->
+          <div class="stage-tools">
+            <div class="segmented-mini" id="emptyStageBgToggle" title="Preview backdrop before adding photos">
+              <button type="button" id="btnLiveBgChecker" class="seg-mini-btn active">Alpha Grid</button>
+              <button type="button" id="btnLiveBgSample" class="seg-mini-btn">Sample Backdrop</button>
+            </div>
+            <button type="button" id="btnExportActiveSvg" class="btn btn-ghost btn-xs" title="Download standalone transparent editable .SVG">
+              Save .SVG
+            </button>
+            <button type="button" id="btnExportActivePng" class="btn btn-ghost btn-xs" title="Download standalone 2000×1414 transparent .PNG overlay">
+              Overlay .PNG
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Canvas Viewport (Also acts as Drag & Drop target) -->
+        <div class="stage-well" id="dropzone">
+          <div class="artboard-wrap checker-dark" id="artboardWrap">
+            <!-- Live SVG preview when 0 photos are loaded -->
+            <img id="liveOverlayImg" class="artboard-overlay-preview" alt="Live template preview">
+
+            <!-- Interactive Photo + Overlay Canvas when >=1 photo is selected -->
+            <canvas id="stageCanvas" class="stage-canvas" hidden></canvas>
+
+            <!-- Subtle Drop Hint Pill (when 0 photos loaded) -->
+            <button type="button" id="btnEmptyDropPrompt" class="stage-drop-pill">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Drop photos anywhere on canvas, or click to browse</span>
+            </button>
+
+            <!-- Drag-and-drop active veil -->
+            <div class="drop-veil" id="dropVeil" aria-hidden="true">
+              <div class="drop-veil-box">Release to add photos to studio</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Framing Bar (Active when a photo is selected) -->
+        <div class="stage-framing-bar" id="stageFramingBar" hidden>
+          <div class="framing-left">
+            <span class="framing-hint">Drag photo to reposition</span>
+          </div>
+          <div class="framing-zoom">
+            <label for="stageZoomSlider" class="mono-meta">Zoom</label>
+            <input type="range" id="stageZoomSlider" min="1" max="3" step="0.01" value="1">
+            <span id="stageZoomVal" class="mono-meta">1.00×</span>
+            <button type="button" id="btnStageResetCrop" class="btn btn-ghost btn-xs">Center</button>
+          </div>
+          <div class="framing-right">
+            <button type="button" id="btnToggleRawHold" class="btn btn-ghost btn-xs" title="Hold to compare raw unframed photo">Hold Raw</button>
+            <button type="button" id="btnDownloadCurrent" class="btn btn-secondary btn-xs">Download This Photo</button>
+          </div>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div id="progressBarContainer" class="progress-line" hidden>
+          <div id="progressBar" class="progress-line-fill"></div>
+        </div>
+
+        <!-- Bottom Filmstrip / Batch Queue -->
+        <div class="filmstrip-bar" id="filmstripBar">
+          <div class="filmstrip-header">
+            <div class="filmstrip-stats">
+              <strong id="filmstripCountLabel">0 Photos</strong>
+              <span class="filmstrip-sub" id="filmstripSubHint">Add 1 photo for a single post, or drop a whole event folder to batch-export</span>
+            </div>
+            <div class="filmstrip-actions" id="filmstripBatchActions" hidden>
+              <button type="button" id="btnDownloadAllZip" class="btn btn-secondary btn-xs">
+                Export All (.ZIP)
+              </button>
+              <button type="button" id="btnClearAll" class="btn btn-ghost btn-xs text-danger">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <div class="filmstrip-track" id="imageGrid">
+            <button type="button" id="btnFilmstripAdd" class="filmstrip-add-card" title="Add photos from your computer">
+              <span class="plus-glyph">+</span>
+              <span>Add Photos</span>
+            </button>
+            <!-- Photo thumbnails appended by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ZONE 3 (RIGHT): POST TEXT & BRANDING INSPECTOR -->
+      <aside class="panel panel-right" id="paneInspector">
+        <div class="panel-header">
+          <h2 class="panel-title">Post Content</h2>
+          <!-- Scope Switcher: Global vs Selected Photo Override -->
+          <div class="scope-bar" id="inspectorScopeBar" hidden>
+            <div class="mode-pills" id="editScopeTabs">
+              <button type="button" class="mode-pill active" data-scope="global">All Photos</button>
+              <button type="button" class="mode-pill" data-scope="item" id="btnScopeItem">This Photo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="inspector-body">
+          <!-- Per-Photo Override Banner (shown only when editing "This Photo") -->
+          <div id="itemOverrideBanner" class="override-banner" hidden>
+            <div class="override-row">
+              <label class="switch-row">
+                <input type="checkbox" id="chkItemCustomText">
+                <span>Custom text for <strong id="overridePhotoName">this photo</strong></span>
+              </label>
+              <button type="button" id="btnResetItemOverrides" class="link-btn">Reset</button>
+            </div>
+            <div class="field-group" style="margin-top: 8px;">
+              <label for="itemTemplateSelect">Layout for this photo</label>
+              <select id="itemTemplateSelect">
+                <option value="">Same as global layout</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Story Overlay Master Switch -->
+          <div class="inspector-section">
+            <div class="toggle-card">
+              <div>
+                <div class="toggle-title">Headline &amp; Caption</div>
+                <div class="toggle-desc">Turn off for clean photo-documentation borders</div>
+              </div>
+              <label class="toggle-switch" aria-label="Show headline and caption overlay">
+                <input type="checkbox" id="chkShowStory" checked>
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <div id="storyFieldsContainer" class="fields-stack">
+              <div class="field-group">
+                <div class="label-row">
+                  <label for="inputCategory">Category Eyebrow</label>
+                  <button type="button" class="link-btn preset-cat-chip" data-cat="">Clear</button>
+                </div>
+                <input type="text" id="inputCategory" value="OFFICIAL ANNOUNCEMENT" placeholder="e.g. CAMPUS NEWS">
+                <div class="chip-strip">
+                  <button type="button" class="chip preset-cat-chip" data-cat="OFFICIAL ANNOUNCEMENT">Announcement</button>
+                  <button type="button" class="chip preset-cat-chip" data-cat="CAMPUS NEWS">News</button>
+                  <button type="button" class="chip preset-cat-chip" data-cat="EVENT UPDATE">Event</button>
+                  <button type="button" class="chip preset-cat-chip" data-cat="IN PHOTOS">In Photos</button>
+                  <button type="button" class="chip preset-cat-chip" data-cat="PRESS RELEASE">Press</button>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <div class="label-row">
+                  <label for="inputDate">Date &amp; Location</label>
+                  <button type="button" id="btnSetToday" class="link-btn">Use Today</button>
+                </div>
+                <input type="text" id="inputDate" value="NOVEMBER 26, 2026 • LARENA, SIQUIJOR" placeholder="DATE • VENUE">
+              </div>
+
+              <div class="field-group">
+                <div class="label-row">
+                  <label for="inputHeading">Post Heading</label>
+                  <button type="button" id="btnClearHeading" class="link-btn">Clear</button>
+                </div>
+                <textarea id="inputHeading" rows="2" placeholder="Write headline (auto-wraps &amp; scales to fit)...">SSC Celebrates Lorem Ipsum Dolor Sit Amet</textarea>
+              </div>
+
+              <div class="field-group">
+                <div class="label-row">
+                  <label for="inputCaption">Caption / Lead Copy</label>
+                  <button type="button" id="btnClearCaption" class="link-btn">Clear</button>
+                </div>
+                <textarea id="inputCaption" rows="4" placeholder="Write short summary or photo caption...">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collapsible Organization Branding & Socials -->
+          <details class="inspector-accordion" id="brandingAccordion">
+            <summary class="accordion-summary">
+              <span>Organization &amp; Footer Contacts</span>
+              <span class="accordion-chevron" aria-hidden="true">▾</span>
+            </summary>
+            <div class="accordion-content">
+              <div class="field-group">
+                <label for="inputOrgTitle">Institution Name</label>
+                <input type="text" id="inputOrgTitle" value="SIQUIJOR STATE COLLEGE">
+              </div>
+              <div class="field-group">
+                <label for="inputOrgSubtitle">Organization / Office</label>
+                <input type="text" id="inputOrgSubtitle" value="STUDENT GOVERNMENT">
+              </div>
+              <div class="field-group">
+                <label for="inputFacebook">Facebook Page</label>
+                <input type="text" id="inputFacebook" value="Siquijor State College - Student Government">
+              </div>
+              <div class="field-group">
+                <label for="inputEmail">Official Email</label>
+                <input type="text" id="inputEmail" value="sgoffice@siquijorstate.edu.ph">
+              </div>
+              <button type="button" id="btnResetTextDefaults" class="btn btn-ghost btn-sm" style="width: 100%;">
+                Restore Default SSC-SG Text
+              </button>
+            </div>
+          </details>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- Export & Resolution Settings Popover Modal -->
+  <div id="settingsModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-labelledby="settingsModalHeading">
+      <div class="modal-head">
+        <h3 id="settingsModalHeading">Export Settings</h3>
+        <button type="button" class="icon-close" id="btnCloseSettingsModal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-content">
+        <div class="field-group">
+          <label for="settingResolution">Output Resolution</label>
+          <select id="settingResolution">
+            <option value="highres" selected>High-Res Print &amp; Social (SSC 2000×1414 · 4:3 1440×1080 · 16:9 2400×1350)</option>
+            <option value="standard">Standard Web (SSC 1414×1000 · 4:3 1200×900 · 16:9 1920×1080)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="settingFormat">Image Format</label>
+          <select id="settingFormat">
+            <option value="image/png" selected>PNG — Lossless crisp typography</option>
+            <option value="image/jpeg">JPEG — Smaller file size (93% quality)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label for="settingPrefix">Filename Prefix</label>
+          <input type="text" id="settingPrefix" value="pubmat_">
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" id="btnCancelSettings" class="btn btn-ghost">Cancel</button>
+        <button type="button" id="btnSaveSettings" class="btn btn-primary">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reset Workspace Confirmation Modal -->
+  <div id="resetModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="resetModalHeading" aria-describedby="resetModalDesc">
+      <div class="modal-head">
+        <h3 id="resetModalHeading">Reset Studio Progress?</h3>
+        <button type="button" class="icon-close" id="btnCloseResetModal" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-content">
+        <p id="resetModalDesc" class="modal-body-text">
+          This will clear all uploaded photos, crop &amp; zoom adjustments, custom templates, and edited post text from local storage, restoring the studio to its default state.
+        </p>
+        <div class="reset-summary-box" id="resetSummaryBox">
+          All locally saved session data will be permanently cleared.
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" id="btnCancelReset" class="btn btn-secondary">Keep Working</button>
+        <button type="button" id="btnConfirmReset" class="btn btn-danger-solid">Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local Offline Scripts -->
+  <script src="borders-data.js"></script>
+  <script src="pubmat-templates.js"></script>
+  <script src="jszip.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

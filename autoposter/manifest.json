@@ -1,0 +1,16 @@
+{
+  "name": "autoPub",
+  "short_name": "autoPub",
+  "description": "Offline client-side tool to automatically apply pubmat frame overlays to photos",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00FF66",
+  "icons": [
+    {
+      "src": "4x3.png",
+      "sizes": "1440x1080",
+      "type": "image/png"
+    }
+  ]
+}
